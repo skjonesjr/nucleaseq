@@ -10,11 +10,11 @@ if __name__ == '__main__':
         name='nucleaseq',
         packages=['nucleaseq'],
         version=VERSION,
-#        entry_points={
-#          'console_scripts': [
-#              'nucleaseq = nucleaseq.main:main'
-#          ]
-#        },
+        entry_points={
+          'console_scripts': [
+              'nucleaseq = nucleaseq.main:main'
+          ]
+        },
 #        ext_modules=cythonize('nucleaseq/editmeasures.pyx'),
         include_package_data=True,
         zip_safe=False,

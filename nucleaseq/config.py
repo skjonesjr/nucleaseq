@@ -18,7 +18,7 @@ class CommandLineArguments(object):
     @property
     def command(self):
         if self._arguments.get('preprocess'):
-            return 'preprocess' + self.arguments.get('<uncut_or_cut>')
+            return 'preprocess' + self._arguments.get('<uncut_or_cut>')
         ## We have to do this weird loop to deal with the way docopt stores the command name
         #for possible_command in ('decode',
         #                         'generate',
@@ -52,12 +52,20 @@ class CommandLineArguments(object):
         return int(self._arguments['<pamtarg_pos>'])
 
     @property
+    def nprocs(self):
+        if self._arguments['<nprocs>']:
+            return int(self._arguments['<nprocs>'])
+        return None
+
+    @property
     def start(self):
         return int(self._arguments['<start>'] or 0)
 
     @property
     def end(self):
         if self._arguments['<end>']:
+            if (self.end - self.start) % self.inc:
+                raise ValueError('<end> - <start> must be a multiple of <inc>')
             return int(self._arguments['<end>'])
         return None
 

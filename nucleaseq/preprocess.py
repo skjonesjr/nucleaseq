@@ -202,7 +202,7 @@ def preprocess_cut(arguments):
                 right_side, right_bc, right_pos, right_edits, left_side, left_bc, left_pos, left_edits
     
         assert ((left_side == 'left' and right_side is None)
-                or (left_side is None and right_side == 'right'), (left_side, right_side, seq)
+                or (left_side is None and right_side == 'right')), (left_side, right_side, seq)
         
         if left_side == 'left' and left_bc is None:
             return 'left none', len(read_names)

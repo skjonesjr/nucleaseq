@@ -6,12 +6,7 @@ from general_sequence_tools import dna_rev_comp
 from NucleaSeqOligo import NucleaSeqOligo
 
 
-log = logging.getLogger()
-handler = logging.StreamHandler()
-formatter = logging.Formatter("%(asctime)s   %(message)s", "%Y-%m-%d %H:%M:%S")
-handler.setFormatter(formatter)
-log.addHandler(handler)
-log.setLevel(logging.INFO)
+log = logging.getLogger(__name__)
 
 
 def assert_len_1_and_return_element(my_set):

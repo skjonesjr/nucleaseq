@@ -52,6 +52,14 @@ class CommandLineArguments(object):
         return int(self._arguments['<pamtarg_pos>'])
 
     @property
+    def max_primer_err(self):
+        return int(self._arguments['<max_primer_err>'])
+
+    @property
+    def max_bc_err(self):
+        return int(self._arguments['<max_bc_err>'])
+
+    @property
     def nprocs(self):
         if self._arguments['<nprocs>']:
             return int(self._arguments['<nprocs>'])

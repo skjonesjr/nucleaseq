@@ -2,7 +2,7 @@
 NucleaSeq
 
 Usage:
-  nucleaseq preprocess <uncut_or_cut> <targets_file> <target_name> <pamtarg_pos> <exploded_oligos_file> <read_names_by_seq_file> <read_names_by_sample_file> [--start=<start>] [--end=<end>] [--inc=<inc>] [--nprocs=<nprocs>] [-v | -vv | -vvv]
+  nucleaseq preprocess <uncut_or_cut> <targets_file> <target_name> <pamtarg_pos> <exploded_oligos_file> <max_primer_err> <max_bc_err> <read_names_by_seq_file> <read_names_by_sample_file> [--start=<start>] [--end=<end>] [--inc=<inc>] [--nprocs=<nprocs>] [-v | -vv | -vvv]
 
 Options:
   -h --help     Show this screen.

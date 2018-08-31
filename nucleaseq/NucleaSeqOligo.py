@@ -6,6 +6,16 @@ class NucleaSeqOligo(object):
     """
     A class for the convenient storage and processing of one NucleaSeq oligo sequence.
     """
+    self.pieces_names = [
+        'primer_left',
+        'barcode_left',
+        'buffer_left',
+        'target',
+        'buffer_right',
+        'right_buffer_buffer',
+        'barcode_right',
+        'primer_right',
+    ]
 
     def __init__(self,
                  cr_left,
@@ -24,17 +34,6 @@ class NucleaSeqOligo(object):
         self._right_buffer_buffer = right_buffer_buffer
         self._barcode_right = barcode_right
         self._cr_right = cr_right
-
-        self.pieces_names = [
-            'primer_left',
-            'barcode_left',
-            'buffer_left',
-            'target',
-            'buffer_right',
-            'right_buffer_buffer',
-            'barcode_right',
-            'primer_right',
-        ]
 
     @property
     def pieces(self):

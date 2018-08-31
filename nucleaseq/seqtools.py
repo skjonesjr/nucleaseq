@@ -33,7 +33,7 @@ def load_read_name_seq_items(fpath):
         if seq_rc in read_names_given_seq:
             read_names_given_seq[seq].update(read_names_given_seq[seq_rc])
             del read_names_given_seq[seq_rc]
-    log.info('Deduped read_names_given_seq: {:,d} seqs, {:,d} reads}'.format(
+    log.info('Deduped read_names_given_seq: {:,d} seqs, {:,d} reads'.format(
         len(read_names_given_seq),
         sum(len(v) for v in read_names_given_seq.values())
     ))

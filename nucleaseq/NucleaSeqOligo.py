@@ -6,7 +6,7 @@ class NucleaSeqOligo(object):
     """
     A class for the convenient storage and processing of one NucleaSeq oligo sequence.
     """
-    self.pieces_names = [
+    pieces_names = [
         'primer_left',
         'barcode_left',
         'buffer_left',

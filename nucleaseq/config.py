@@ -53,11 +53,17 @@ class CommandLineArguments(object):
 
     @property
     def start(self):
-        return int(self._arguments['<start>'])
+        return int(self._arguments['<start>'] or 0)
+
+    @property
+    def end(self):
+        if self._arguments['<end>']:
+            return int(self._arguments['<end>'])
+        return None
 
     @property
     def inc(self):
-        return int(self._arguments['<inc>'])
+        return int(self._arguments['<inc>'] or 100000)
 
     @property
     def log_level(self):

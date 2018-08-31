@@ -61,8 +61,8 @@ class CommandLineArguments(object):
 
     @property
     def nprocs(self):
-        if self._arguments['<nprocs>']:
-            return int(self._arguments['<nprocs>'])
+        if self._arguments['--nprocs']:
+            return int(self._arguments['--nprocs'])
         return None
 
     @property

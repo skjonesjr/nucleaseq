@@ -25,100 +25,6 @@ def piece_starts_and_edits(aligned_pieces):
         obs_start_idx += sum(1 for oc in observed_align if oc != '-')
     return piece_starts[1:], piece_edits  # Don't return that the first piece starts at zero
 
-def left_piece_starts_edits_and_cut_pamtarg_coord(aligned_pieces, oligo):
-    # Determine cut piece
-    for cut_piece_idx, (_, observed_align) in enumerate(aligned_pieces):
-        if set(observed_align) == set('-'):
-            cut_piece_idx -= 1
-            break
-    
-    # Separate by type
-    full_pieces = aligned_pieces[:cut_piece_idx]
-    cut_piece = aligned_pieces[cut_piece_idx]
-    gone_pieces = aligned_pieces[cut_piece_idx + 1:]
-    
-    # Full pieces
-    obs_start_idx = 0
-    piece_starts, piece_edits = [], []
-    for ref_align, observed_align in full_pieces:
-        piece_starts.append(obs_start_idx)
-        piece_edits.append(count_alignment_edits(ref_align, observed_align))
-        obs_start_idx += sum(1 for oc in observed_align if oc != '-')
-        
-    # Cut piece
-    piece_starts.append(obs_start_idx)
-    ref_align, observed_align = cut_piece
-    cut_idx = 0
-    for i, oc in enumerate(observed_align):
-        if oc != '-':
-            cut_idx = i + 1
-    piece_edits.append(count_alignment_edits(ref_align[:cut_idx], observed_align[:cut_idx]))
-    
-    # Cut pos
-    cut_pos = sum(1 for rc in ref_align[:cut_idx] if rc != '-')
-    cut_pos += sum(len(p) for p in oligo.pieces[:cut_piece_idx])
-    if oligo in oligos_container.target_oligos:
-        cut_pamtarg_coord = oligo.convert_oligo_pos_to_pamtarg_coord(cut_pos)
-    else:
-        cut_pamtarg_coord = cut_pos
-
-    
-    # Gone pieces
-    for _ in gone_pieces:
-        piece_starts.append(np.nan)
-        piece_edits.append(np.nan)
-    
-    assert len(aligned_pieces) == len(piece_starts) == len(piece_edits), ('\n'.join(aligned_pieces), 
-                                                                          piece_starts, 
-                                                                          piece_edits) 
-    return piece_starts[1:], piece_edits, cut_pamtarg_coord  # Don't return that the first piece starts at zero
-
-def right_piece_starts_edits_and_cut_pamtarg_coord(aligned_pieces, oligo):
-    # Determine cut piece
-    for cut_piece_idx, (_, observed_align) in enumerate(aligned_pieces):
-        if set(observed_align) != set('-'):
-            break
-    
-    # Separate by type
-    gone_pieces = aligned_pieces[:cut_piece_idx]
-    cut_piece = aligned_pieces[cut_piece_idx]
-    full_pieces = aligned_pieces[cut_piece_idx + 1:]
-    
-    # Gone pieces
-    piece_starts, piece_edits = [], []
-    for _ in gone_pieces:
-        piece_starts.append(np.nan)
-        piece_edits.append(np.nan)
-    
-    # Cut piece
-    piece_starts.append(0)
-    ref_align, observed_align = cut_piece
-    cut_idx = 0
-    for cut_idx, oc in enumerate(observed_align):
-        if oc != '-':
-            break
-    piece_edits.append(count_alignment_edits(ref_align[cut_idx:], observed_align[cut_idx:]))
-
-    # Cut pos
-    cut_pos = sum(1 for rc in ref_align[:cut_idx] if rc != '-')
-    cut_pos += sum(len(p) for p in oligo.pieces[:cut_piece_idx])
-    if oligo in oligos_container.target_oligos:
-        cut_pamtarg_coord = oligo.convert_oligo_pos_to_pamtarg_coord(cut_pos)
-    else:
-        cut_pamtarg_coord = cut_pos
-
-    # Full pieces
-    obs_start_idx = sum(1 for oc in observed_align if oc != '-') # from cut piece
-    for ref_align, observed_align in full_pieces:
-        piece_starts.append(obs_start_idx)
-        piece_edits.append(count_alignment_edits(ref_align, observed_align))
-        obs_start_idx += sum(1 for oc in observed_align if oc != '-')
-        
-    assert len(aligned_pieces) == len(piece_starts) == len(piece_edits), ('\n'.join(aligned_pieces), 
-                                                                          piece_starts, 
-                                                                          piece_edits) 
-    return piece_starts[1:], piece_edits, cut_pamtarg_coord  # Don't return that the first piece starts at zero
-
 def test_oligo_alignments(oligo_container):
     log.debug('Showing test alignments.')
     oligo = oligo_container.oligos[0]
@@ -158,8 +64,8 @@ def preprocess_cut(arguments):
     )
 
     log.info('Loading FREE barcode decoder')
-    bc_decoder = FreeDivBarcodeDecoder()
-    bc_decoder.build_codebook_from_codewords(oligo_container.barcodes, arguments.max_bc_err)
+    #bc_decoder = FreeDivBarcodeDecoder()
+    #bc_decoder.build_codebook_from_codewords(oligo_container.barcodes, arguments.max_bc_err)
 
     def identify_side_and_barcode(seq):
         for cr, side in [(oligo_container.cr_left, 'left'),
@@ -171,6 +77,100 @@ def preprocess_cut(arguments):
                 bc = bc_decoder.decode(obs_bc.replace('N', 'A'))
                 return side, bc, pos, cr_edits
         return None, None, None, None
+
+    def left_piece_starts_edits_and_cut_pamtarg_coord(aligned_pieces, oligo):
+        # Determine cut piece
+        for cut_piece_idx, (_, observed_align) in enumerate(aligned_pieces):
+            if set(observed_align) == set('-'):
+                cut_piece_idx -= 1
+                break
+        
+        # Separate by type
+        full_pieces = aligned_pieces[:cut_piece_idx]
+        cut_piece = aligned_pieces[cut_piece_idx]
+        gone_pieces = aligned_pieces[cut_piece_idx + 1:]
+        
+        # Full pieces
+        obs_start_idx = 0
+        piece_starts, piece_edits = [], []
+        for ref_align, observed_align in full_pieces:
+            piece_starts.append(obs_start_idx)
+            piece_edits.append(count_alignment_edits(ref_align, observed_align))
+            obs_start_idx += sum(1 for oc in observed_align if oc != '-')
+            
+        # Cut piece
+        piece_starts.append(obs_start_idx)
+        ref_align, observed_align = cut_piece
+        cut_idx = 0
+        for i, oc in enumerate(observed_align):
+            if oc != '-':
+                cut_idx = i + 1
+        piece_edits.append(count_alignment_edits(ref_align[:cut_idx], observed_align[:cut_idx]))
+        
+        # Cut pos
+        cut_pos = sum(1 for rc in ref_align[:cut_idx] if rc != '-')
+        cut_pos += sum(len(p) for p in oligo.pieces[:cut_piece_idx])
+        if oligo in oligo_container.target_oligos:
+            cut_pamtarg_coord = oligo.convert_oligo_pos_to_pamtarg_coord(cut_pos)
+        else:
+            cut_pamtarg_coord = cut_pos
+    
+        
+        # Gone pieces
+        for _ in gone_pieces:
+            piece_starts.append(np.nan)
+            piece_edits.append(np.nan)
+        
+        assert len(aligned_pieces) == len(piece_starts) == len(piece_edits), ('\n'.join(aligned_pieces), 
+                                                                              piece_starts, 
+                                                                              piece_edits) 
+        return piece_starts[1:], piece_edits, cut_pamtarg_coord  # Don't return that the first piece starts at zero
+    
+    def right_piece_starts_edits_and_cut_pamtarg_coord(aligned_pieces, oligo):
+        # Determine cut piece
+        for cut_piece_idx, (_, observed_align) in enumerate(aligned_pieces):
+            if set(observed_align) != set('-'):
+                break
+        
+        # Separate by type
+        gone_pieces = aligned_pieces[:cut_piece_idx]
+        cut_piece = aligned_pieces[cut_piece_idx]
+        full_pieces = aligned_pieces[cut_piece_idx + 1:]
+        
+        # Gone pieces
+        piece_starts, piece_edits = [], []
+        for _ in gone_pieces:
+            piece_starts.append(np.nan)
+            piece_edits.append(np.nan)
+        
+        # Cut piece
+        piece_starts.append(0)
+        ref_align, observed_align = cut_piece
+        cut_idx = 0
+        for cut_idx, oc in enumerate(observed_align):
+            if oc != '-':
+                break
+        piece_edits.append(count_alignment_edits(ref_align[cut_idx:], observed_align[cut_idx:]))
+    
+        # Cut pos
+        cut_pos = sum(1 for rc in ref_align[:cut_idx] if rc != '-')
+        cut_pos += sum(len(p) for p in oligo.pieces[:cut_piece_idx])
+        if oligo in oligo_container.target_oligos:
+            cut_pamtarg_coord = oligo.convert_oligo_pos_to_pamtarg_coord(cut_pos)
+        else:
+            cut_pamtarg_coord = cut_pos
+    
+        # Full pieces
+        obs_start_idx = sum(1 for oc in observed_align if oc != '-') # from cut piece
+        for ref_align, observed_align in full_pieces:
+            piece_starts.append(obs_start_idx)
+            piece_edits.append(count_alignment_edits(ref_align, observed_align))
+            obs_start_idx += sum(1 for oc in observed_align if oc != '-')
+            
+        assert len(aligned_pieces) == len(piece_starts) == len(piece_edits), ('\n'.join(aligned_pieces), 
+                                                                              piece_starts, 
+                                                                              piece_edits) 
+        return piece_starts[1:], piece_edits, cut_pamtarg_coord  # Don't return that the first piece starts at zero
 
     pieces_names = NucleaSeqOligo.pieces_names
 
@@ -286,6 +286,7 @@ def preprocess_cut(arguments):
     out_fname_template = 'cut_data.{:0%dd}-{:0%dd}.pkl' % (seq_idx_digits, seq_idx_digits)
 
     stats = Counter()
+    return
     while start < last_end:
         end = start + arguments.inc
         pl = mp.Pool(arguments.nprocs)
@@ -331,7 +332,6 @@ def preprocess_uncut(arguments):
     oligo_container = OligosContainer(arguments.exploded_oligos_file,
                                       perfect_target,
                                       arguments.pamtarg_pos)
-    test_oligo_alignments(oligo_container)
 
     log.info('Loading read name properties')
     read_name_items = load_read_name_seq_items(arguments.read_names_by_seq_file)
@@ -340,8 +340,8 @@ def preprocess_uncut(arguments):
     )
 
     log.info('Loading FREE barcode decoder')
-    bc_decoder = FreeDivBarcodeDecoder()
-    bc_decoder.build_codebook_from_codewords(oligo_container.barcodes, arguments.max_bc_err)
+    #bc_decoder = FreeDivBarcodeDecoder()
+    #bc_decoder.build_codebook_from_codewords(oligo_container.barcodes, arguments.max_bc_err)
 
     def identify_side_and_barcode(seq):
         for cr, side in [(oligo_container.cr_left, 'left'),
@@ -378,8 +378,8 @@ def preprocess_uncut(arguments):
         #------------------------------------
         # Process and store
         #------------------------------------
-        left_oligo = None if left_bc is None else oc.oligo_given_barcode_given_side[left_side][left_bc]
-        right_oligo = None if right_bc is None else oc.oligo_given_barcode_given_side[right_side][right_bc]
+        left_oligo = None if left_bc is None else oligo_container.oligo_given_barcode_given_side[left_side][left_bc]
+        right_oligo = None if right_bc is None else oligo_container.oligo_given_barcode_given_side[right_side][right_bc]
         
         read_names = list(read_names)
         samples = [sample_given_read_name[rn] for rn in read_names]
@@ -538,6 +538,7 @@ def preprocess_uncut(arguments):
     }
 
     stats = Counter()
+    return
     while start < last_end:
         end = start + arguments.inc
         pl = mp.Pool(arguments.nprocs)

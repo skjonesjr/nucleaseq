@@ -20,7 +20,7 @@ def load_read_name_seq_items(fpath):
         read_names = words[1:]
         read_names_given_seq[seq].update(read_names)
     read_names_given_seq = dict(read_names_given_seq)
-    log.info('Raw read_names_given_seq: {:,d} seqs, {:,d} reads}'.format(
+    log.info('Raw read_names_given_seq: {:,d} seqs, {:,d} reads'.format(
         len(read_names_given_seq),
         sum(len(v) for v in read_names_given_seq.values())
     ))

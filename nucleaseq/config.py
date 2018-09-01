@@ -72,9 +72,10 @@ class CommandLineArguments(object):
     @property
     def end(self):
         if self._arguments['--end']:
-            if (self.end - self.start) % self.inc:
+            end = int(self._arguments['--end'])
+            if (end - self.start) % self.inc:
                 raise ValueError('<end> - <start> must be a multiple of <inc>')
-            return int(self._arguments['--end'])
+            return end
         return None
 
     @property

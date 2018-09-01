@@ -1,8 +1,10 @@
+import os
 import random
 import yaml
 import multiprocessing as mp
 import numpy as np
 import pandas as pd
+from pathos.multiprocessing import ProcessingPool
 from collections import Counter, defaultdict
 from freebarcodes import editmeasures
 from freebarcodes.decode import FreeDivBarcodeDecoder
@@ -25,24 +27,6 @@ def piece_starts_and_edits(aligned_pieces):
         obs_start_idx += sum(1 for oc in observed_align if oc != '-')
     return piece_starts[1:], piece_edits  # Don't return that the first piece starts at zero
 
-def test_oligo_alignments(oligo_container):
-    log.debug('Showing test alignments.')
-    oligo = oligo_container.oligos[0]
-    log.debug('All oligo pieces:\n' + str(oligo.pieces))
-    left_oligo = oligo.sequence[:50] + oligo.sequence[55:65]
-    right_oligo = oligo.sequence[45:55] + oligo.sequence[60:]
-
-    cut_oligo = left_oligo
-    aligned_pieces = oligo.align_and_return_as_pieces(cut_oligo)
-    log.debug('Aligned pieces:\n' + '\n'.join(map(str, aligned_pieces)))
-    log.debug('Starts and nEdits:\n' + str(left_piece_starts_edits_and_cut_pamtarg_coord(aligned_pieces, oligo)))
-
-    cut_oligo = right_oligo
-    aligned_pieces = oligo.align_and_return_as_pieces(cut_oligo)
-    log.debug('Aligned pieces:\n' + '\n'.join(map(str, aligned_pieces)))
-    log.debug('Starts and nEdits:\n' + str(right_piece_starts_edits_and_cut_pamtarg_coord(aligned_pieces, oligo)))
-
-
 def preprocess_cut(arguments):
     log.info('NProcs: {}'.format(arguments.nprocs or 'All'))
 
@@ -50,22 +34,6 @@ def preprocess_cut(arguments):
     targets = yaml.load(open(arguments.targets_file))
     perfect_target = targets[arguments.target_name]
     log.info('Target {}: {}'.format(arguments.target_name, perfect_target))
-
-    log.info('Loading oligo details')
-    oligo_container = OligosContainer(arguments.exploded_oligos_file,
-                                      perfect_target,
-                                      arguments.pamtarg_pos)
-    test_oligo_alignments(oligo_container)
-
-    log.info('Loading read name properties')
-    read_name_items = load_read_name_seq_items(arguments.read_names_by_seq_file)
-    sample_given_read_name = load_sample_given_read_name(
-        arguments.read_names_by_sample_file
-    )
-
-    log.info('Loading FREE barcode decoder')
-    #bc_decoder = FreeDivBarcodeDecoder()
-    #bc_decoder.build_codebook_from_codewords(oligo_container.barcodes, arguments.max_bc_err)
 
     def identify_side_and_barcode(seq):
         for cr, side in [(oligo_container.cr_left, 'left'),
@@ -171,6 +139,41 @@ def preprocess_cut(arguments):
                                                                               piece_starts, 
                                                                               piece_edits) 
         return piece_starts[1:], piece_edits, cut_pamtarg_coord  # Don't return that the first piece starts at zero
+
+    def test_oligo_alignments(oligo_container):
+        log.debug('Showing test alignments.')
+        oligo = oligo_container.oligos[0]
+        log.debug('All oligo pieces:\n' + str(oligo.pieces))
+        left_oligo = oligo.sequence[:50] + oligo.sequence[55:65]
+        right_oligo = oligo.sequence[45:55] + oligo.sequence[60:]
+    
+        cut_oligo = left_oligo
+        aligned_pieces = oligo.align_and_return_as_pieces(cut_oligo, align_method='global_cfe')
+        log.debug('Aligned pieces:\n' + '\n'.join(map(str, aligned_pieces)))
+        log.debug('Starts and nEdits:\n' + str(left_piece_starts_edits_and_cut_pamtarg_coord(aligned_pieces, oligo)))
+    
+        cut_oligo = right_oligo
+        aligned_pieces = oligo.align_and_return_as_pieces(cut_oligo, align_method='global_cfe')
+        log.debug('Aligned pieces:\n' + '\n'.join(map(str, aligned_pieces)))
+        log.debug('Starts and nEdits:\n' + str(right_piece_starts_edits_and_cut_pamtarg_coord(aligned_pieces, oligo)))
+
+
+    log.info('Loading oligo details')
+    oligo_container = OligosContainer(arguments.exploded_oligos_file,
+                                      perfect_target,
+                                      arguments.pamtarg_pos)
+    test_oligo_alignments(oligo_container)
+
+    log.info('Loading read name properties')
+    read_name_items = load_read_name_seq_items(arguments.read_names_by_seq_file)
+    sample_given_read_name = load_sample_given_read_name(
+        arguments.read_names_by_sample_file
+    )
+
+    log.info('Loading FREE barcode decoder')
+    bc_decoder = FreeDivBarcodeDecoder()
+    bc_decoder.build_codebook_from_codewords(oligo_container.barcodes, arguments.max_bc_err)
+
 
     pieces_names = NucleaSeqOligo.pieces_names
 
@@ -286,12 +289,13 @@ def preprocess_cut(arguments):
     out_fname_template = 'cut_data.{:0%dd}-{:0%dd}.pkl' % (seq_idx_digits, seq_idx_digits)
 
     stats = Counter()
-    return
     while start < last_end:
         end = start + arguments.inc
-        pl = mp.Pool(arguments.nprocs)
-        res = pl.map(process_cut, read_name_items[start:end])
+        #pl = mp.Pool(arguments.nprocs)
+        pl = ProcessingPool(arguments.nprocs)
+        res = pl.map(preprocess_cutseq, read_name_items[start:end])
         pl.close()
+        pl.terminate()
         pl.join()
         del pl
 
@@ -340,8 +344,8 @@ def preprocess_uncut(arguments):
     )
 
     log.info('Loading FREE barcode decoder')
-    #bc_decoder = FreeDivBarcodeDecoder()
-    #bc_decoder.build_codebook_from_codewords(oligo_container.barcodes, arguments.max_bc_err)
+    bc_decoder = FreeDivBarcodeDecoder()
+    bc_decoder.build_codebook_from_codewords(oligo_container.barcodes, arguments.max_bc_err)
 
     def identify_side_and_barcode(seq):
         for cr, side in [(oligo_container.cr_left, 'left'),
@@ -528,7 +532,7 @@ def preprocess_uncut(arguments):
 
     seq_types = ['full', 'none', 'wrong']
     out_dir = {seq_type: '{}_data_files'.format(seq_type) for seq_type in seq_types}
-    for dname in out_dirs:
+    for dname in out_dir.values():
         if not os.path.exists(dname):
             os.mkdir(dname)
     seq_idx_digits = len(str(len(read_name_items)))
@@ -538,12 +542,13 @@ def preprocess_uncut(arguments):
     }
 
     stats = Counter()
-    return
     while start < last_end:
         end = start + arguments.inc
-        pl = mp.Pool(arguments.nprocs)
+        #pl = mp.Pool(arguments.nprocs)
+        pl = ProcessingPool(arguments.nprocs)
         res = pl.map(process_full_none_wrong, read_name_items[start:end])
         pl.close()
+        pl.terminate()
         pl.join()
         del pl
 

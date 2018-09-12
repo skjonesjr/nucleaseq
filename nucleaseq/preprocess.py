@@ -240,9 +240,9 @@ def preprocess_cut(arguments):
             piece_starts, piece_edits, cut_pamtarg_coord = right_piece_starts_edits_and_cut_pamtarg_coord(aligned_pieces, 
                                                                                                           oligo)
     
-        edits_names = ['edits_' + pn for pn in piece_names]
-        start_names = ['start_' + pn for pn in piece_names[1:]]
-        aligned_pieces_names = ['aligned_' + pn for pn in piece_names]
+        edits_names = ['edits_' + pn for pn in pieces_names]
+        start_names = ['start_' + pn for pn in pieces_names[1:]]
+        aligned_pieces_names = ['aligned_' + pn for pn in pieces_names]
         edits_dict = {name: edits for name, edits in zip(edits_names, piece_edits)}
         starts_dict = {name: start for name, start in zip(start_names, piece_starts)}
         aligned_pieces_dict = {name: [al for _ in range(len(samples))]
@@ -319,7 +319,7 @@ def preprocess_cut(arguments):
             del cut_data_frames
             del cut_data
                 
-        log.info('{:d,}-{:,d}: '.format(start, end) + str(stats.items()))
+        log.info('{:d,}-{:,d}: '.format(start, end) + str(sorted(stats.items())))
         start += arguments.inc
 
 
@@ -393,9 +393,9 @@ def preprocess_uncut(arguments):
             oligo = left_oligo
             aligned_pieces = oligo.align_and_return_as_pieces(seq)
             piece_starts, piece_edits = piece_starts_and_edits(aligned_pieces)
-            edits_names = ['edits_' + pn for pn in piece_names]
-            start_names = ['start_' + pn for pn in piece_names[1:]]
-            aligned_pieces_names = ['aligned_' + pn for pn in piece_names]
+            edits_names = ['edits_' + pn for pn in pieces_names]
+            start_names = ['start_' + pn for pn in pieces_names[1:]]
+            aligned_pieces_names = ['aligned_' + pn for pn in pieces_names]
             edits_dict = {name: edits for name, edits in zip(edits_names, piece_edits)}
             starts_dict = {name: start for name, start in zip(start_names, piece_starts)}
             aligned_pieces_dict = {name: [al for _ in range(len(samples))]
@@ -437,9 +437,9 @@ def preprocess_uncut(arguments):
                 
             aligned_pieces = oligo.align_and_return_as_pieces(seq)
             piece_starts, piece_edits = piece_starts_and_edits(aligned_pieces)
-            edits_names = ['edits_' + pn for pn in piece_names]
-            start_names = ['start_' + pn for pn in piece_names[1:]]
-            aligned_pieces_names = ['aligned_' + pn for pn in piece_names]
+            edits_names = ['edits_' + pn for pn in pieces_names]
+            start_names = ['start_' + pn for pn in pieces_names[1:]]
+            aligned_pieces_names = ['aligned_' + pn for pn in pieces_names]
             edits_dict = {name: edits for name, edits in zip(edits_names, piece_edits)}
             starts_dict = {name: start for name, start in zip(start_names, piece_starts)}
             aligned_pieces_dict = {name: [al for _ in range(len(samples))]
@@ -476,17 +476,17 @@ def preprocess_uncut(arguments):
             right_aligned_pieces = right_oligo.align_and_return_as_pieces(seq)
             right_piece_starts, right_piece_edits = piece_starts_and_edits(right_aligned_pieces)
             
-            left_edits_names = ['left_edits_' + pn for pn in piece_names]
-            left_start_names = ['left_start_' + pn for pn in piece_names[1:]]
-            left_aligned_pieces_names = ['left_aligned_' + pn for pn in piece_names]
+            left_edits_names = ['left_edits_' + pn for pn in pieces_names]
+            left_start_names = ['left_start_' + pn for pn in pieces_names[1:]]
+            left_aligned_pieces_names = ['left_aligned_' + pn for pn in pieces_names]
             left_edits_dict = {name: edits for name, edits in zip(left_edits_names, left_piece_edits)}
             left_starts_dict = {name: start for name, start in zip(left_start_names, left_piece_starts)}
             left_aligned_pieces_dict = {name: [al for _ in range(len(samples))]
                                         for name, al in zip(left_aligned_pieces_names, left_aligned_pieces)}
             
-            right_edits_names = ['right_edits_' + pn for pn in piece_names]
-            right_start_names = ['right_start_' + pn for pn in piece_names[1:]]
-            right_aligned_pieces_names = ['right_aligned_' + pn for pn in piece_names]
+            right_edits_names = ['right_edits_' + pn for pn in pieces_names]
+            right_start_names = ['right_start_' + pn for pn in pieces_names[1:]]
+            right_aligned_pieces_names = ['right_aligned_' + pn for pn in pieces_names]
             right_edits_dict = {name: edits for name, edits in zip(right_edits_names, right_piece_edits)}
             right_starts_dict = {name: start for name, start in zip(right_start_names, right_piece_starts)}
             right_aligned_pieces_dict = {name: [al for _ in range(len(samples))]
@@ -574,5 +574,5 @@ def preprocess_uncut(arguments):
             
         del res
     
-        log.info('{:d,}-{:,d}: '.format(start, end) + str(stats.items()))
+        log.info('{:d,}-{:,d}: '.format(start, end) + str(sorted(stats.items())))
         start += arguments.inc

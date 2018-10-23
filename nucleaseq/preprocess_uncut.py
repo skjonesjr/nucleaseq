@@ -24,7 +24,7 @@ if not log.handlers:
 
 #-------------------------------------------------------------------------------
 # Arguments
-usg_fmt = '{} <start> <inc> <end>'.format(sys.argv[0])
+usg_fmt = '{} <targets_file> <target_name> <pamtarg_pos> <exploded_oligos_file> <max_primer_err> <max_bc_err> <read_names_by_seq_file> <read_names_by_sample_file> <start> <inc> <end> <nprocs>'.format(sys.argv[0])
 if len(sys.argv) != len(usg_fmt.split()):
     sys.exit('Usage: ' + usg_fmt)
 

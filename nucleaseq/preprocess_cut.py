@@ -16,28 +16,28 @@ import logging
 
 
 log = logging.getLogger()
-handler = logging.StreamHandler()
-formatter = logging.Formatter("%(asctime)s   %(message)s", "%Y-%m-%d %H:%M:%S")
-handler.setFormatter(formatter)
-log.addHandler(handler)
-log.setLevel(logging.INFO)
+if not log.handlers:
+    handler = logging.StreamHandler()
+    formatter = logging.Formatter("%(asctime)s   %(message)s", "%Y-%m-%d %H:%M:%S")
+    handler.setFormatter(formatter)
+    log.addHandler(handler)
+    log.setLevel(logging.INFO)
 
 #-------------------------------------------------------------------------------
 # Arguments
 usg_fmt = '{} <start> <inc> <end>'.format(sys.argv[0])
 if len(sys.argv) != len(usg_fmt.split()):
     sys.exit('Usage: ' + usg_fmt)
-start, inc, end = map(int, sys.argv[1:])
 
-nprocs = 38
-targets_file = '/shared/targets.yml'
-target_name = ''
-max_primer_err = 2
-max_bc_err = 2
-exploded_oligos_file = 'exploded_target_{}_seqs.txt'.format(target_name.lower())
-pamtarg_pos = 
-read_names_by_seq_file = ''
-read_names_by_sample_file = ''
+targets_file = sys.argv[1]
+target_name = sys.argv[2]
+pamtarg_pos = int(sys.argv[3])
+exploded_oligos_file = sys.argv[4]
+max_primer_err = int(sys.argv[5])
+max_bc_err = int(sys.argv[6])
+read_names_by_seq_file = sys.argv[7]
+read_names_by_sample_file = sys.argv[8]
+start, inc, end, nprocs = map(int, sys.argv[9:])
 #-------------------------------------------------------------------------------
 
 

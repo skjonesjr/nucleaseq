@@ -63,7 +63,7 @@ class CommandLineArguments(object):
     def nprocs(self):
         if self._arguments['--nprocs']:
             return int(self._arguments['--nprocs'])
-        return None
+        return 1
 
     @property
     def start(self):

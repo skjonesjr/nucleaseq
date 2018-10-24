@@ -8,7 +8,7 @@ log = logging.getLogger(__name__)
 THIS_DIR = os.path.dirname(os.path.abspath(__file__))
 
 def preprocess(arguments):
-    read_name_items = load_deduped_read_names_given_seq(read_names_by_seq_file)
+    read_name_items = load_deduped_read_names_given_seq(arguments.read_names_by_seq_file)
     last_end = len(read_name_items)
 
     if arguments.uncut_or_cut == 'uncut':

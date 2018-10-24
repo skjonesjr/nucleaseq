@@ -11,7 +11,7 @@ def dna_rev_comp(dna_string):
     return dna_string.translate(dna_complements)[::-1]
 
 
-def load_read_name_seq_items(fpath):
+def load_deduped_read_names_given_seq(fpath):
     log.info('Loading read_names_given_seq file {}'.format(fpath))
     read_names_given_seq = defaultdict(set)
     for line in open(fpath):
@@ -37,7 +37,10 @@ def load_read_name_seq_items(fpath):
         len(read_names_given_seq),
         sum(len(v) for v in read_names_given_seq.values())
     ))
+    return read_names_given_seq
 
+def load_read_name_seq_items(fpath):
+    read_names_given_seq = load_deduped_read_names_given_seq(fpath)
     # Saving as items and sorting
     log.info('Sorting read_name_seq_items')
     read_name_seq_items = read_names_given_seq.items()

@@ -18,7 +18,7 @@ class CommandLineArguments(object):
     @property
     def command(self):
         if self._arguments.get('preprocess'):
-            return 'preprocess ' + self._arguments.get('<uncut_or_cut>')
+            return 'preprocess'
         ## We have to do this weird loop to deal with the way docopt stores the command name
         #for possible_command in ('decode',
         #                         'generate',
@@ -26,6 +26,10 @@ class CommandLineArguments(object):
         #                         'concatenate'):
         #    if self._arguments.get(possible_command):
         #        return possible_command
+
+    @property
+    def uncut_or_cut(self):
+        return os.path.expanduser(self._arguments['<uncut_or_cut>']) or None
 
     @property
     def targets_file(self):

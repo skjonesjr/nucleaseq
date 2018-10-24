@@ -67,20 +67,15 @@ class CommandLineArguments(object):
 
     @property
     def start(self):
-        return int(self._arguments['--start'] or 0)
-
-    @property
-    def end(self):
-        if self._arguments['--end']:
-            end = int(self._arguments['--end'])
-            if (end - self.start) % self.inc:
-                raise ValueError('<end> - <start> must be a multiple of <inc>')
-            return end
-        return None
+        return int(self._arguments['<start>'] or 0)
 
     @property
     def inc(self):
-        return int(self._arguments['--inc'] or 100000)
+        return int(self._arguments['<inc>'] or 100000)
+
+    @property
+    def large_inc(self):
+        return int(self._arguments['<large_inc>'] or 1000000)
 
     @property
     def log_level(self):

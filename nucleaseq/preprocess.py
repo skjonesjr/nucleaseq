@@ -16,7 +16,7 @@ def preprocess(arguments):
     if arguments.uncut_or_cut == 'cut':
         preprocess_script = os.path.join(THIS_DIR, 'preprocess_cut.py')
 
-    for start in range(0, last_end, arguments.large_inc):
+    for start in range(arguments.start, last_end, arguments.large_inc):
         cmd = [
             'python',
             preprocess_script,

@@ -53,7 +53,7 @@ oligo_container = OligosContainer(exploded_oligos_file,
                                   pamtarg_pos)
 
 log.info('Loading read name properties')
-read_name_items = load_read_name_seq_items(read_names_by_seq_file)
+read_name_items = load_read_name_seq_items(arguments.read_names_by_seq_file)
 sample_given_read_name = load_sample_given_read_name(
     read_names_by_sample_file
 )

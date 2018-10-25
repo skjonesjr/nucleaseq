@@ -1,3 +1,4 @@
+import os
 import string
 import logging
 from collections import Counter, defaultdict
@@ -40,11 +41,28 @@ def load_deduped_read_names_given_seq(fpath):
     return read_names_given_seq
 
 def load_read_name_seq_items(fpath):
-    read_names_given_seq = load_deduped_read_names_given_seq(fpath)
-    # Saving as items and sorting
-    log.info('Sorting read_name_seq_items')
-    read_name_seq_items = read_names_given_seq.items()
-    read_name_seq_items.sort()
+    suffix = '.dedup_sort.txt'
+    if fpath.endswith(suffix):
+        out_fpath = fpath
+    else:
+        out_fpath = fpath + suffix
+
+    if os.path.exists(out_fpath):
+        log.info('Loading deduped and sorted read_names_given_seq: {}'.format(out_fpath))
+        read_name_seq_items = []
+        for line in open(out_fpath):
+            words = line.strip().split()
+            read_name_seq_items.append((words[0], words[1:]))
+    else:
+        read_names_given_seq = load_deduped_read_names_given_seq(fpath)
+        # Saving as items and sorting
+        log.info('Sorting read_name_seq_items')
+        read_name_seq_items = read_names_given_seq.items()
+        read_name_seq_items.sort()
+        with open(out_fpath, 'w') as out:
+            for seq, rns in read_name_seq_items:
+                out.write('{}\t{}\n'.format(seq, '\t'.join(rns)))
+
     return read_name_seq_items
 
 

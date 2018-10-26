@@ -65,7 +65,7 @@ def load_read_name_seq_items(fpath):
 
     log.info('Deduped sorted read_name_seq_items: {:,d} seqs, {:,d} reads'.format(
         len(read_name_seq_items),
-        sum(tup[1] for tup in read_name_seq_items)
+        sum(len(tup[1]) for tup in read_name_seq_items)
     ))
     return read_name_seq_items
 

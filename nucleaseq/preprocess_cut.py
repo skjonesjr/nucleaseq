@@ -25,7 +25,7 @@ if not log.handlers:
 
 #-------------------------------------------------------------------------------
 # Arguments
-usg_fmt = '{} <targets_file> <target_name> <pamtarg_pos> <exploded_oligos_file> <max_primer_err> <max_bc_err> <read_names_by_seq_file> <read_names_by_sample_file> <start> <inc> <end> <nprocs>'.format(sys.argv[0])
+usg_fmt = '{} <targets_file> <target_name> <pamtarg_pos> <exploded_oligos_file> <max_primer_err> <max_bc_err> <read_names_by_seq_file> <read_names_by_sample_file> <out_dir_prefix> <start> <inc> <end> <nprocs>'.format(sys.argv[0])
 if len(sys.argv) != len(usg_fmt.split()):
     sys.exit('Usage: ' + usg_fmt)
 
@@ -37,7 +37,8 @@ max_primer_err = int(sys.argv[5])
 max_bc_err = int(sys.argv[6])
 read_names_by_seq_file = sys.argv[7]
 read_names_by_sample_file = sys.argv[8]
-start, inc, end, nprocs = map(int, sys.argv[9:])
+out_dir_prefix = sys.argv[9]
+start, inc, end, nprocs = map(int, sys.argv[10:])
 #-------------------------------------------------------------------------------
 
 
@@ -302,7 +303,7 @@ log.info('Start idx: {:,d}'.format(start))
 log.info('End idx: {:,d}'.format(end))
 log.info('Increment: {:,d}'.format(inc))
 
-out_dir = 'cut_data_files'
+out_dir = '{}_cut_data_files'.format(out_dir_prefix)
 if not os.path.exists(out_dir):
     os.mkdir(out_dir)
 seq_idx_digits = len(str(len(read_name_items)))

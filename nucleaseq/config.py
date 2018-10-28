@@ -52,6 +52,10 @@ class CommandLineArguments(object):
         return self._arguments['<target_name>']
 
     @property
+    def out_dir_prefix(self):
+        return self._arguments['<out_dir_prefix>']
+
+    @property
     def pamtarg_pos(self):
         return int(self._arguments['<pamtarg_pos>'])
 

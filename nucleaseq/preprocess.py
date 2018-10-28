@@ -28,6 +28,7 @@ def preprocess(arguments):
             arguments.max_bc_err,
             arguments.read_names_by_seq_file,
             arguments.read_names_by_sample_file,
+            arguments.out_dir_prefix,
             start,
             arguments.inc,
             start + arguments.large_inc,

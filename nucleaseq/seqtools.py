@@ -81,3 +81,12 @@ def load_sample_given_read_name(fpath):
     return sample_given_read_name
 
 
+def load_read_names_given_sample(fpath):
+    log.info('Loading read_names_given_sample from {}'.format(fpath))
+    read_names_given_sample = defaultdict(list)
+    for line in open(fpath):
+        if line.startswith('>'):
+            sample = line.strip()[1:]
+        else:
+            read_names_given_sample[sample] = line.strip()
+    return read_names_given_sample

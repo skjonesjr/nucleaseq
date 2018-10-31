@@ -109,6 +109,7 @@ class OligosContainer(object):
         self.oligo_given_barcode_given_side = {'left': self.oligo_given_left_barcode, 
                                                'right': self.oligo_given_right_barcode}
         self.oligo_given_seq = {oligo.sequence: oligo for oligo in self.oligos}
+        self.target_given_seq = {oligo.sequence: oligo._target for oligo in self.oligos}
         log.info('Made barcode and seq dicts.')
 
         # Update pamtarg coords 

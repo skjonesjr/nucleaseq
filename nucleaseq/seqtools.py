@@ -1,6 +1,7 @@
 import os
 import string
 import logging
+import numpy as np
 from collections import defaultdict
 
 log = logging.getLogger(__name__)

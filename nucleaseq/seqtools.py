@@ -1,7 +1,7 @@
 import os
 import string
 import logging
-from collections import Counter, defaultdict
+from collections import defaultdict
 
 log = logging.getLogger(__name__)
 
@@ -88,5 +88,5 @@ def load_read_names_given_sample(fpath):
         if line.startswith('>'):
             sample = line.strip()[1:]
         else:
-            read_names_given_sample[sample] = line.strip()
+            read_names_given_sample[sample].append(line.strip())
     return read_names_given_sample

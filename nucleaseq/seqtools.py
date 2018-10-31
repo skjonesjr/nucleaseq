@@ -10,7 +10,6 @@ bases = 'ACGT'
 dna_complements = string.maketrans('acgtnACGTN', 'tgcanTGCAN')
 def dna_rev_comp(dna_string):
     return dna_string.translate(dna_complements)[::-1]
-
 def dna_fwd_comp(dna_string):
     return dna_string.translate(dna_complements)
 
@@ -42,6 +41,7 @@ def load_deduped_read_names_given_seq(fpath):
         sum(len(v) for v in read_names_given_seq.values())
     ))
     return read_names_given_seq
+
 
 def load_read_name_seq_items(fpath):
     suffix = '.dedup_sort.txt'

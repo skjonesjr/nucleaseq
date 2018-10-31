@@ -10,16 +10,37 @@ from scipy.stats import gaussian_kde
 from seqtools import bases, forward_complement
 
 
-
 def scatter_color(x, y, bw_method=None):
     positions = np.array([x, y])
     kde = gaussian_kde(positions, bw_method=bw_method)
     return kde(positions)
 
+
 def fractional_placement(lim, frac):
     return (1-frac) * lim[0] + frac*lim[1]
 
 
+def plot_cdf(ax, data, **kw_args):
+    data.sort()
+    
+    # Large data, many duplicate points -> Slow to graph. Dedup here.
+    x = list(set(data))
+    x.sort()
+    y = []
+    xiter = iter(x)
+    xx = next(xiter)
+    for i, dd in enumerate(data):
+        if dd > xx:
+            xx = next(xiter)
+            y.append(i/float(len(data)))  # would be i-1 for one-based arrays
+    y.append(1.0)
+    
+    # Add start and double points strategically for nice plotting
+    x = [x[0]] + 2*x
+    x.sort()
+    y = [0.0] + [yy for tup in zip(y[:-1], y[1:]) for yy in tup] + [y[-1]]*2
+    
+    ax.plot(x, y, **kw_args)
 
 
 def plot_2d_mismatches(sequence, sequence_labels, lower_kKM_matrix, upper_kKM_matrix=None, fontsize=18, cmap='viridis', normalize=False, force_full_bounds=False):

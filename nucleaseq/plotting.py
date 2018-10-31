@@ -43,52 +43,6 @@ def plot_cdf(ax, data, **kw_args):
     ax.plot(x, y, **kw_args)
 
 
-def plot_seqs_data_and_fits(ax, seqs, labels):
-    """Plots the data and fits for given list of seqs"""
-    for seq, label in zip(seqs, labels):
-        seq_read_counts = seq_read_counts_given_oligo_seq[seq]
-        x = [0.1] + list(times)[1:]
-        ax.plot(x, seq_read_counts, 's', label=label + ' data')
-        
-        thalf, y0 = thalf_y0_given_oligo_seq[seq]
-        x = np.logspace(np.log10(x[0]), np.log10(x[-1]), 10000)
-        y = [exponential(xx, y0, np.log(2)/thalf) for xx in x]
-        ax.plot(x, y, label=label + ' fit')
-    ax.set_xlabel('Time (s)')
-    ax.set_ylabel('Normalized Reads')
-    
-    xlim = ax.get_xlim()
-    ylim = ax.get_ylim()
-    ylim = (0, ylim[1])
-    ax.text(plotting.fractional_placement(xlim, 0.3), 
-            plotting.fractional_placement(ylim, 0.5), 
-            '$t_{1/2} = ' + '{:.1f}$'.format(thalf),
-            fontsize=16, ha='center')
-    ax.set_ylim(ylim)
-    ax.legend(fontsize=12)
-
-
-def plot_show_seqs(ax, seqs, labels):
-    for i, (seq, label, char) in enumerate(zip(seqs, labels, 'o^sv')):
-        color = 'C{}'.format(i)
-        seq_read_counts = seq_read_counts_given_oligo_seq[seq]
-        thalf, y0 = thalf_y0_given_oligo_seq[seq]
-        x = [0.1] + list(times)[1:]
-        ax.plot(x, [src/y0 for src in seq_read_counts], 'o', label=label, color=color)
-        
-        x = np.logspace(np.log10(x[0]), np.log10(x[-1]), 10000)
-        y = [exponential(xx, y0, np.log(2)/thalf)/y0 for xx in x]
-        ax.plot(x, y, color=color, linestyle='--')
-    ax.set_xlabel('Time (s)')
-    ax.set_ylabel('Normalized Reads')
-    
-    xlim = ax.get_xlim()
-    ylim = ax.get_ylim()
-    ylim = (0, ylim[1])
-    ax.set_ylim(ylim)
-    ax.legend(fontsize=12)
-
-
 def plot_2d_mismatches(sequence, sequence_labels, lower_kKM_matrix, upper_kKM_matrix=None, fontsize=18, cmap='viridis', normalize=False, force_full_bounds=False):
     dimension = 3
     gs, indexes, (width_ratios, height_ratios) = get_gridspec(sequence, dimension)

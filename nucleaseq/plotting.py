@@ -1,11 +1,25 @@
 import matplotlib.pyplot as plt
-import numpy as np
 from matplotlib.lines import Line2D
 from matplotlib.patches import Ellipse
+import matplotlib.patches as mpatches
 from matplotlib import gridspec
 import matplotlib as mpl
+import numpy as np
 import flabpal
-import matplotlib.patches as mpatches
+from scipy.stats import gaussian_kde
+from seqtools import bases, forward_complement
+
+
+
+def scatter_color(x, y, bw_method=None):
+    positions = np.array([x, y])
+    kde = gaussian_kde(positions, bw_method=bw_method)
+    return kde(positions)
+
+def fractional_placement(lim, frac):
+    return (1-frac) * lim[0] + frac*lim[1]
+
+
 
 
 def plot_2d_mismatches(sequence, sequence_labels, lower_kKM_matrix, upper_kKM_matrix=None, fontsize=18, cmap='viridis', normalize=False, force_full_bounds=False):

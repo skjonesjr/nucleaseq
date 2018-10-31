@@ -7,7 +7,7 @@ import matplotlib as mpl
 import numpy as np
 import flabpal
 from scipy.stats import gaussian_kde
-from seqtools import bases, forward_complement
+from seqtools import bases, dna_fwd_comp
 
 
 def scatter_color(x, y, bw_method=None):

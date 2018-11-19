@@ -1,4 +1,5 @@
 import os
+import re
 import string
 import logging
 import numpy as np
@@ -190,3 +191,5 @@ def complement_stretches_matrix(val_given_seq, perfect_target):
     for start, end, seq in iterate_complement_stretches(perfect_target):
         M[end - 1, start] = val_given_seq.get(seq, None)
     return M
+
+

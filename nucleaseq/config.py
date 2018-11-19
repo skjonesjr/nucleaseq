@@ -17,15 +17,11 @@ class CommandLineArguments(object):
 
     @property
     def command(self):
-        if self._arguments.get('preprocess'):
-            return 'preprocess'
-        ## We have to do this weird loop to deal with the way docopt stores the command name
-        #for possible_command in ('decode',
-        #                         'generate',
-        #                         'prune',
-        #                         'concatenate'):
-        #    if self._arguments.get(possible_command):
-        #        return possible_command
+        # We have to do this weird loop to deal with the way docopt stores the command name
+        for possible_command in ('stitch',
+                                 'preprocess'):
+            if self._arguments.get(possible_command):
+                return possible_command
 
     @property
     def uncut_or_cut(self):
@@ -48,12 +44,16 @@ class CommandLineArguments(object):
         return os.path.expanduser(self._arguments['<read_names_by_sample_file>']) or None
 
     @property
+    def fastq_files(self):
+        return [os.path.expanduser(fpath) for fpath in self._arguments['<fastq_files>']] or None
+
+    @property
     def target_name(self):
         return self._arguments['<target_name>']
 
     @property
-    def out_dir_prefix(self):
-        return self._arguments['<out_dir_prefix>']
+    def out_prefix(self):
+        return self._arguments['<out_prefix>']
 
     @property
     def pamtarg_pos(self):
@@ -66,6 +66,14 @@ class CommandLineArguments(object):
     @property
     def max_bc_err(self):
         return int(self._arguments['<max_bc_err>'])
+
+    @property
+    def min_len(self):
+        return int(self._arguments['<min_len>'])
+
+    @property
+    def max_len(self):
+        return int(self._arguments['<max_len>'])
 
     @property
     def nprocs(self):

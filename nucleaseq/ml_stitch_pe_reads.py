@@ -7,6 +7,7 @@ import logging
 import numpy as np
 from collections import defaultdict
 from Bio import SeqIO
+import nucleaseq
 import misc
 from nucleaseq.seqtools import bases
 from freebarcodes.editmeasures import simple_hamming_distance
@@ -50,7 +51,8 @@ def stitch_reads(arguments):
     #   
     #   log_p_struct[true_base][read_base][phred_score]
     #--------------------------------------------------------------------------------
-    log_p_fpath = os.path.join(os.path.abspath(os.path.join(THIS_DIR, '..')), 'base_logp.pkl')
+    log_p_fpath = os.path.join(os.path.abspath(os.path.join(THIS_DIR, '..')), 'resources', 'base_logp.pkl')
+    #log_p_fpath = os.path.join(THIS_DIR, 'resources', 'base_logp.pkl')
     with open(log_p_fpath) as f:
         log_p_struct = pickle.load(f)
 

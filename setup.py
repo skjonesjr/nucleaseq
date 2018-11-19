@@ -15,9 +15,9 @@ if __name__ == '__main__':
               'nucleaseq = nucleaseq.main:main'
           ]
         },
-#        ext_modules=cythonize('nucleaseq/editmeasures.pyx'),
         include_package_data=True,
         zip_safe=False,
+        data_files=[('base_logp', ['resources/base_logp.pkl'])],
         description='Process NucleaSeq data',
         url='http://www.finkelsteinlab.org',
         keywords=['DNA', 'NGS', 'bioinformatics', 'barcodes', 'Nuclease'],

@@ -18,7 +18,7 @@ class CommandLineArguments(object):
     @property
     def command(self):
         # We have to do this weird loop to deal with the way docopt stores the command name
-        for possible_command in ('stitch',
+        for possible_command in ('setup_run',
                                  'preprocess'):
             if self._arguments.get(possible_command):
                 return possible_command
@@ -44,8 +44,8 @@ class CommandLineArguments(object):
         return os.path.expanduser(self._arguments['<read_names_by_sample_file>']) or None
 
     @property
-    def fastq_files(self):
-        return [os.path.expanduser(fpath) for fpath in self._arguments['<fastq_files>']] or None
+    def sample_dirs(self):
+        return [os.path.expanduser(fpath) for fpath in self._arguments['<sample_dirs>']] or None
 
     @property
     def target_name(self):
@@ -68,12 +68,12 @@ class CommandLineArguments(object):
         return int(self._arguments['<max_bc_err>'])
 
     @property
-    def min_len(self):
-        return int(self._arguments['<min_len>'])
+    def min_seq_len(self):
+        return int(self._arguments['<min_seq_len>'])
 
     @property
-    def max_len(self):
-        return int(self._arguments['<max_len>'])
+    def max_seq_len(self):
+        return int(self._arguments['<max_seq_len>'])
 
     @property
     def nprocs(self):

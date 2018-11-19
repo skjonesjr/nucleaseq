@@ -44,7 +44,7 @@ def stitch_reads(arguments):
     """
     Classifies reads by overlapping ML sequence identity.
     """
-    assert all(map(isint, (arguments.min_len, arguments.max_len))), 'Min and Max lens must be integers'
+    assert all(map(isint, (arguments.min_seq_len, arguments.max_seq_len))), 'Min and Max lens must be integers'
     min_allowed_overlap = 8
     #--------------------------------------------------------------------------------
     # Load log_p dict of dicts of lists. Addessed as follows:
@@ -60,7 +60,7 @@ def stitch_reads(arguments):
     # Find max hamming distances per length considered
     #--------------------------------------------------------------------------------
     log.info('Finding max hamming distances by length')
-    max_ham_dists = get_max_ham_dists(0, arguments.max_len)
+    max_ham_dists = get_max_ham_dists(0, arguments.max_seq_len)
     log.info('Max hamming distances by length found')
 
     #--------------------------------------------------------------------------------
@@ -72,12 +72,12 @@ def stitch_reads(arguments):
         # Store as strings
         seq1 = str(rec1.seq)
         seq2_rc = str(rec2.seq.reverse_complement())
-        loc_max_len = min(arguments.max_len, len(seq1), len(seq2_rc))
+        loc_max_len = min(arguments.max_seq_len, len(seq1), len(seq2_rc))
 
         # Find aligning sequence, indels are not allowed, starts of reads included
-        sig_lens = [i for i in xrange(arguments.min_len, loc_max_len + 1)
+        sig_lens = [i for i in xrange(arguments.min_seq_len, loc_max_len + 1)
                     if simple_hamming_distance(seq1[:i], seq2_rc[-i:]) < max_ham_dists[i]]
-        if loc_max_len < arguments.max_len:
+        if loc_max_len < arguments.max_seq_len:
             # max_len longer than seq1 or seq2
             sig_lens.extend(
                 [len(seq1) + len(seq2_rc) - i for i in xrange(min_allowed_overlap, loc_max_len)

@@ -47,6 +47,8 @@ def stitch_reads(arguments):
     """
     assert all(map(isint, (arguments.min_seq_len, arguments.max_seq_len))), 'Min and Max lens must be integers'
     min_allowed_overlap = 8
+    out_fpath = '{}_read_names_by_seq.txt'.format(arguments.out_prefix)
+    log.info('Making {}'.format(out_fpath))
     #--------------------------------------------------------------------------------
     # Load log_p dict of dicts of lists. Addessed as follows:
     #   
@@ -131,7 +133,7 @@ def stitch_reads(arguments):
     #--------------------------------------------------------------------------------
     fastq_fpaths = [fpath
                     for sample_dir in arguments.sample_dirs
-                    for fpath in glob.glob(sample_dir, '*')]
+                    for fpath in glob.glob(os.path.join(sample_dir, '*'))]
 
     pe_fpaths, se_fpaths = misc.find_paired_and_unpaired_files_from_fpaths(fastq_fpaths)
     assert not se_fpaths, 'All fastq files should be paired:\n{}'.format('\n'.join(se_fpaths))
@@ -157,10 +159,10 @@ def stitch_reads(arguments):
     #--------------------------------------------------------------------------------
     # Output results
     #--------------------------------------------------------------------------------
-    out_fpath = '{}_read_names_by_seq.txt'.format(arguments.out_prefix)
     with open(out_fpath, 'w') as out:
         for seq, read_names in sorted(read_names_given_seq.items()):
             out.write('{}\t{}\n'.format(seq, '\t'.join(read_names)))
+    log.info('Finished making {}'.format(out_fpath))
 
 
 def make_read_names_by_sample(arguments):
@@ -170,7 +172,7 @@ def make_read_names_by_sample(arguments):
         for sample_dir in arguments.sample_dirs:
             log.info('    {}'.format(sample_dir))
             out.write('>{}\n'.format(sample_dir))
-            fastq_fpaths = [fpath for fpath in glob.glob(sample_dir, '*')]
+            fastq_fpaths = [fpath for fpath in glob.glob(os.path.join(sample_dir, '*'))]
             pe_fpaths, se_fpaths = misc.find_paired_and_unpaired_files_from_fpaths(fastq_fpaths)
             assert not se_fpaths, 'All fastq files should be paired:\n{}'.format('\n'.join(se_fpaths))
             for fpath1, fpath2 in pe_fpaths:

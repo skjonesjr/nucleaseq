@@ -2,7 +2,7 @@ import logging
 import editdistance
 from freebarcodes import editmeasures
 from collections import Counter
-from general_sequence_tools import dna_rev_comp
+from seqtools import dna_rev_comp
 from NucleaSeqOligo import NucleaSeqOligo
 
 

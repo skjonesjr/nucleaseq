@@ -5,7 +5,6 @@ import yaml
 import multiprocessing as mp
 import numpy as np
 import pandas as pd
-from pathos.multiprocessing import ProcessingPool
 from collections import Counter, defaultdict
 from freebarcodes import editmeasures
 from freebarcodes.decode import FreeDivBarcodeDecoder
@@ -275,10 +274,8 @@ out_fname_template = {
 while start < last_end:
     end = start + inc
     pl = mp.Pool(nprocs)
-    #pl = ProcessingPool(nprocs)
     res = pl.map(process_full_none_wrong, read_name_items[start:end])
     pl.close()
-    #pl.terminate()
     pl.join()
     del pl
 

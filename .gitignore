@@ -4,3 +4,5 @@ envnucleaseq
 build
 dist
 nucleaseq.egg-info
+*.c
+*.so

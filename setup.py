@@ -15,6 +15,7 @@ if __name__ == '__main__':
               'nucleaseq = nucleaseq.main:main'
           ]
         },
+        ext_modules=cythonize('nucleaseq/align_cy.pyx'),
         include_package_data=True,
         zip_safe=False,
         data_files=[('resources', ['resources/base_logp.pkl'])],

@@ -243,7 +243,11 @@ def preprocess_cutseq(tup):
 
     if left_side == 'left':
         side = 'left'
-        oligo = oligo_container.oligo_given_barcode_given_side[left_side][left_bc]
+        try:
+            oligo = oligo_container.oligo_given_barcode_given_side[left_side][left_bc]
+        except:
+            # Rare case where mis-corrected errors produce invalid left barcode
+            return 'left none', len(read_names)
         try:
             aligned_pieces = oligo.align_and_return_as_pieces(seq, align_method='global_cfe')
         except:
@@ -253,7 +257,11 @@ def preprocess_cutseq(tup):
     else:
         assert right_side == 'right', (left_side, right_side, seq)
         side = 'right'
-        oligo = oligo_container.oligo_given_barcode_given_side[right_side][right_bc]
+        try:
+            # Rare case where mis-corrected errors produce invalid right barcode
+            oligo = oligo_container.oligo_given_barcode_given_side[right_side][right_bc]
+        except:
+            return 'right none', len(read_names)
         try:
             aligned_pieces = oligo.align_and_return_as_pieces(seq, align_method='global_cfe')
         except:

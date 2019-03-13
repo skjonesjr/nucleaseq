@@ -1,6 +1,5 @@
 from Bio import pairwise2
-from align import aligner
-from align.matrix import DNAFULL
+from align_cy import aligner
 
 class NucleaSeqOligo(object):
     """
@@ -140,7 +139,7 @@ class NucleaSeqOligo(object):
             ref_align, observed_align = alignments[0][:2]  
         elif align_method == 'global_cfe':
             ref_align, observed_align = aligner(self.sequence, observed_seq, method='global_cfe',
-                                                matrix=DNAFULL, gap_open=-10, gap_extend=-1)[0][:2]
+                                                matrix='DNAFULL', gap_open=-10, gap_extend=-1)[0][:2]
         else:
             raise ValueError(
                 'Only supported alignment methods are global / global_cfe: {}'.format(align_method)

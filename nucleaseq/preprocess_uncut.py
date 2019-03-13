@@ -112,8 +112,12 @@ def process_full_none_wrong(tup):
     #------------------------------------
     # Process and store
     #------------------------------------
-    left_oligo = None if left_bc is None else oligo_container.oligo_given_barcode_given_side[left_side][left_bc]
-    right_oligo = None if right_bc is None else oligo_container.oligo_given_barcode_given_side[right_side][right_bc]
+    try:
+        left_oligo = None if left_bc is None else oligo_container.oligo_given_barcode_given_side[left_side][left_bc]
+        right_oligo = None if right_bc is None else oligo_container.oligo_given_barcode_given_side[right_side][right_bc]
+    except:
+        # Rare case where mis-corrected errors produce invalid barcode
+        return 'other', len(read_names)
     
     read_names = list(read_names)
     samples = [sample_given_read_name[rn] for rn in read_names]

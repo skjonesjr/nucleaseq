@@ -12,7 +12,7 @@ def float2dna(f, k):
     return seqtools.num2dna(float2int(f, k), k)
 
 
-def passes_filters(seq, GC_max, bad_substrs=['CC', 'GG', 'AAA', 'TTT']):
+def passes_filters(seq, GC_max, bad_substrs):
     GC_count = seq.count('C') + seq.count('G')
     if GC_count > GC_max or len(seq) - GC_count > GC_max:
         return False
@@ -24,15 +24,17 @@ def passes_filters(seq, GC_max, bad_substrs=['CC', 'GG', 'AAA', 'TTT']):
             return False
     return True
 
-def golden_iterator(bc_len):
-    GC_max = min(range(bc_len), key=lambda x: abs(float(x)/bc_len-0.6))
+def golden_iterator(bc_len, bad_substrs=[], GC_max_frac=0.6, max_tries=10000000):
+    GC_max = min(range(bc_len), key=lambda x: abs(float(x)/bc_len-GC_max_frac))
     
+    i = 0
     val = 0
-    for _ in xrange(10000000):
+    while i < max_tries:
+        i += 1
         val += golden_remainder
         val %= 1
         val_int = float2int(val, bc_len)
         val_seq = seqtools.num2dna(val_int, bc_len)
         
-        if passes_filters(val_seq, GC_max):
+        if passes_filters(val_seq, GC_max, bad_substrs):
             yield val_seq

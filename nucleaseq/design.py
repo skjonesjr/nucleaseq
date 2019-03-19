@@ -97,6 +97,12 @@ def is_desired_distance_from_all(seq, prefixes, dist):
     return True
 
 
+def seq_if_potential_good_prefix(params):
+    seq, primer_len_prefixes, cut_prefix_min_dist = params
+    if is_desired_distance_from_all(seq, primer_len_prefixes, cut_prefix_min_dist):
+        return seq
+
+
 def find_good_prefixes(complete_sequences,
                        primer_len,
                        bad_substrs,
@@ -111,13 +117,9 @@ def find_good_prefixes(complete_sequences,
     cut_prefix_min_dist = 4 * primer_max_err + 1
     good_prefix_min_dist = cut_prefix_min_dist + 2
 
-    
-    def seq_if_potential_good_prefix(seq):
-        if is_desired_distance_from_all(seq, primer_len_prefixes, cut_prefix_min_dist):
-            return seq
-
     def add_to_good_prefixes(good_prefixes):
-        next_seqs = [next(primer_iter) for _ in range(chunk_size)]
+        next_seqs = [(next(primer_iter), primer_len_prefixes, cut_prefix_min_dist)
+                     for _ in range(chunk_size)]
         pl = Pool(nprocs)
         res = pl.map(seq_if_potential_good_prefix, next_seqs)
         pl.close()

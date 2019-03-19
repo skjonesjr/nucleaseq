@@ -2,7 +2,7 @@ import sys
 import random
 import seqtools
 import editdistance
-from golden_iterator import golden_iterator
+from golden_iterator import parallel_golden_iterator
 from multiprocessing import Pool
 
 
@@ -107,7 +107,7 @@ def find_good_prefixes(complete_sequences,
                        chunk_size=500000):
     cut_prefixes = get_cut_prefixes(complete_sequences, cannonical_cut_sites, fudge_factor)
     primer_len_prefixes = set([prefix[:primer_len] for prefix in cut_prefixes])
-    primer_iter = golden_iterator(primer_len, bad_substrs, max_tries=float('inf'))
+    primer_iter = parallel_golden_iterator(primer_len, nprocs, bad_substrs, max_tries=float('inf'))
     cut_prefix_min_dist = 4 * primer_max_err + 1
     good_prefix_min_dist = cut_prefix_min_dist + 2
 

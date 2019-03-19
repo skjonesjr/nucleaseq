@@ -1,5 +1,6 @@
 import numpy as np
 from freebarcodes import seqtools
+from multiprocessing import Pool
 
 
 golden_ratio = (np.float128(1) + np.sqrt(np.float128(5)))/np.float128(2.0)
@@ -24,6 +25,11 @@ def passes_filters(seq, GC_max, bad_substrs):
             return False
     return True
 
+def seq_if_passes_filters(params):
+    if passes_filters(*params):
+        return params[0]
+
+
 def golden_iterator(bc_len, bad_substrs=[], GC_max_frac=0.6, max_tries=10000000):
     GC_max = min(range(bc_len), key=lambda x: abs(float(x)/bc_len-GC_max_frac))
     
@@ -38,3 +44,30 @@ def golden_iterator(bc_len, bad_substrs=[], GC_max_frac=0.6, max_tries=10000000)
         
         if passes_filters(val_seq, GC_max, bad_substrs):
             yield val_seq
+
+def parallel_golden_iterator(bc_len,
+                             nprocs,
+                             bad_substrs=[],
+                             GC_max_frac=0.6,
+                             max_tries=10000000,
+                             chunk_size=5000000):
+    GC_max = min(range(bc_len), key=lambda x: abs(float(x)/bc_len-GC_max_frac))
+    
+    i = 0
+    val = 0
+    while i < max_tries:
+        next_seqs = []
+        for _ in range(chunk_size):
+            val += golden_remainder
+            val %= 1
+            val_int = float2int(val, bc_len)
+            next_seqs.append((seqtools.num2dna(val_int, bc_len), GC_max, tuple(bad_substrs)))
+        pl = Pool(nprocs)
+        res = pl.map(seq_if_passes_filters, next_seqs)
+        pl.close()
+
+        for seq in res:
+            if seq:
+                i += 1
+                yield seq
+

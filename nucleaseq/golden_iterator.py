@@ -50,7 +50,7 @@ def parallel_golden_iterator(bc_len,
                              bad_substrs=[],
                              GC_max_frac=0.6,
                              max_tries=10000000,
-                             chunk_size=5000000):
+                             chunk_size=10000000):
     GC_max = min(range(bc_len), key=lambda x: abs(float(x)/bc_len-GC_max_frac))
     
     i = 0

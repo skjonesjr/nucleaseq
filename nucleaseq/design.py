@@ -120,10 +120,13 @@ def find_good_prefixes(complete_sequences,
     def add_to_good_prefixes(good_prefixes):
         next_seqs = [(next(primer_iter), primer_len_prefixes, cut_prefix_min_dist)
                      for _ in range(chunk_size)]
+        sys.stdout.write('.')
+        sys.stdout.flush()
+
         pl = Pool(nprocs)
         res = pl.map(seq_if_potential_good_prefix, next_seqs)
         pl.close()
-        potential_good_prefixes = [seq for seq in next_seqs if seq]
+        potential_good_prefixes = [seq for seq in res if seq]
 
         for seq in potential_good_prefixes:
             if is_desired_distance_from_all(seq, good_prefixes, good_prefix_min_dist):

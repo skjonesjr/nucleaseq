@@ -103,6 +103,16 @@ def seq_if_potential_good_prefix(params):
         return seq
 
 
+def no_hex_complementarity(s1, good_prefixes):
+    s1_rc = seqtools.dna_rev_comp(s1)
+    for i in range(len(s1) - 5):
+        sub_s1_rc = s1_rc[i:i+6]
+        for s2 in good_prefixes:
+            if sub_s1_rc in s2:
+                return False
+    return True
+
+
 def find_good_prefixes(complete_sequences,
                        primer_len,
                        bad_substrs,
@@ -129,7 +139,8 @@ def find_good_prefixes(complete_sequences,
         potential_good_prefixes = [seq for seq in res if seq]
 
         for seq in potential_good_prefixes:
-            if is_desired_distance_from_all(seq, good_prefixes, good_prefix_min_dist):
+            if (is_desired_distance_from_all(seq, good_prefixes, good_prefix_min_dist)
+                and no_hex_complementarity(seq, good_prefixes)):
                 sys.stdout.write('*')
                 sys.stdout.flush()
                 good_prefixes.append(seq)

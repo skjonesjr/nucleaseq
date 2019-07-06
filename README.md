@@ -52,5 +52,5 @@ Usage:
   nucleaseq preprocess <uncut_or_cut> <targets_file> <target_name> <pamtarg_pos> <exploded_oligos_file> <max_primer_err> <max_bc_err> <read_names_by_seq_file> <read_names_by_sample_file> <out_prefix> <start> <inc> <large_inc> [--nprocs=<nprocs>] [-v | -vv | -vvv]
 ```
 
-#### Coming soon:
-Jupyter notebooks for convenient organization of output results and figures.
+##### Coming soon:
+Jupyter notebooks with convenient organization of output results and figures.

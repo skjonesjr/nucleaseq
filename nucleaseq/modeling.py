@@ -24,7 +24,7 @@ cas9_prots = [
 cas9_lower_prots = [prot.lower() for prot in cas9_prots]
 
 cas9_params = [
-    parse_single_effects(os.path.join('params', '{}_single_effects_params.txt'.format(prot.lower())))
+    parse_single_effects(os.path.join(THIS_DIR, 'params', '{}_single_effects_params.txt'.format(prot.lower())))
     for prot in cas9_prots
 ]
 cas12a_params = parse_single_effects('params/cas12a_single_effects_params.txt')

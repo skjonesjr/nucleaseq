@@ -6,4 +6,4 @@ scipy==1.0.1
 editdistance
 finkelsteinlabpalette==1.2.1
 pandas==0.22.0
-pyyaml==3.12
+pyyaml==5.1

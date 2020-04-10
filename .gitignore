@@ -6,3 +6,4 @@ dist
 nucleaseq.egg-info
 *.c
 *.so
+.ipynb_checkpoints

@@ -2,7 +2,7 @@ import sys
 import random
 import seqtools
 import editdistance
-from golden_iterator import golden_iterator
+from golden_iterator import parallel_golden_iterator
 from multiprocessing import Pool
 
 
@@ -97,6 +97,22 @@ def is_desired_distance_from_all(seq, prefixes, dist):
     return True
 
 
+def seq_if_potential_good_prefix(params):
+    seq, primer_len_prefixes, cut_prefix_min_dist = params
+    if is_desired_distance_from_all(seq, primer_len_prefixes, cut_prefix_min_dist):
+        return seq
+
+
+def no_hex_complementarity(s1, good_prefixes):
+    s1_rc = seqtools.dna_rev_comp(s1)
+    for i in range(len(s1) - 5):
+        sub_s1_rc = s1_rc[i:i+6]
+        for s2 in good_prefixes:
+            if sub_s1_rc in s2:
+                return False
+    return True
+
+
 def find_good_prefixes(complete_sequences,
                        primer_len,
                        bad_substrs,
@@ -107,24 +123,24 @@ def find_good_prefixes(complete_sequences,
                        chunk_size=500000):
     cut_prefixes = get_cut_prefixes(complete_sequences, cannonical_cut_sites, fudge_factor)
     primer_len_prefixes = set([prefix[:primer_len] for prefix in cut_prefixes])
-    primer_iter = golden_iterator(primer_len, bad_substrs, max_tries=float('inf'))
+    primer_iter = parallel_golden_iterator(primer_len, nprocs, bad_substrs, max_tries=float('inf'))
     cut_prefix_min_dist = 4 * primer_max_err + 1
     good_prefix_min_dist = cut_prefix_min_dist + 2
 
-    
-    def seq_if_potential_good_prefix(seq):
-        if is_desired_distance_from_all(seq, primer_len_prefixes, cut_prefix_min_dist):
-            return seq
-
     def add_to_good_prefixes(good_prefixes):
-        next_seqs = [next(primer_iter) for _ in range(chunk_size)]
+        next_seqs = [(next(primer_iter), primer_len_prefixes, cut_prefix_min_dist)
+                     for _ in range(chunk_size)]
+        sys.stdout.write('.')
+        sys.stdout.flush()
+
         pl = Pool(nprocs)
         res = pl.map(seq_if_potential_good_prefix, next_seqs)
         pl.close()
-        potential_good_prefixes = [seq for seq in next_seqs if seq]
+        potential_good_prefixes = [seq for seq in res if seq]
 
         for seq in potential_good_prefixes:
-            if is_desired_distance_from_all(seq, good_prefixes, good_prefix_min_dist):
+            if (is_desired_distance_from_all(seq, good_prefixes, good_prefix_min_dist)
+                and no_hex_complementarity(seq, good_prefixes)):
                 sys.stdout.write('*')
                 sys.stdout.flush()
                 good_prefixes.append(seq)

@@ -50,7 +50,7 @@ NucleaSeq data processing and analysis is memory intensive. All work for the ori
 performed on a server with 256GB of RAM. Less is possible with reduced the parallelization, but
 results in correspondingly slower runtimes. Memory usage also depends on library design, and
 analysis of the original experiments required at least 64GB of RAM. For the first run, monitor
-memory use carefully, and select the machine and parallelization selections accordingly.
+memory use carefully, and select the machine and parallelization accordingly.
 
 ### Usage
 

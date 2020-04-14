@@ -5,13 +5,32 @@ Usage:
   nucleaseq setup_run <min_seq_len> <max_seq_len> <out_prefix> <sample_dirs>... [-v | -vv | -vvv]
   nucleaseq preprocess <uncut_or_cut> <targets_file> <target_name> <pamtarg_pos> <exploded_oligos_file> <max_primer_err> <max_bc_err> <read_names_by_seq_file> <read_names_by_sample_file> <out_prefix> <start> <inc> <large_inc> [--nprocs=<nprocs>] [-v | -vv | -vvv]
 
-Options:
-  -h --help     Show this screen.
-  --version     Show version.
-
 Commands:
   setup_run         Makes read_names_by_seq and read_names_by_sample for a given run.
   preprocess        Preprocess reads to determine identity and structure.
+  
+Parameters:
+  min_seq_len                    Minimum sequence length to analyse
+  max_seq_len                    Maximum sequence length to analyse
+  out_prefix                     Prefix for output files for specific run
+  sample_dirs                    Directories with sample fastq files, one directory per time point
+  uncut_or_cut                   "cut" or "uncut", selecting which reads to process
+  targets_file                   Yaml file with targets and target names (see targets.yml)
+  target_name                    Target name for current experiment
+  pamtarg_pos                    Position in target defined as 1. Previous is -1.
+  exploded_oligos_file           Exploded oligos file from library design
+  max_primer_err                 Maximum allowed primer error
+  max_bc_err                     Maximum allowed barcode error
+  read_names_by_seq_file         Path to file generated during setup_run
+  read_names_by_sample_file      Path to file generated during setup_run
+  start                          Read index to start analysis (typically zero)
+  inc                            Chunk size for data output (typically 100,000)
+  large_inc                      Processing increment size (typically 2,000,000)
+  nprocs                         Number of processors for parallelization
+
+Options:
+  -h --help     Show this screen.
+  --version     Show version.
 
 """
 import logging

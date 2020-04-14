@@ -44,13 +44,40 @@ Finally, install nucleaseq with
 python setup.py install
 ```
 
+### A note on memory
+
+NucleaSeq data processing and analysis is memory intensive. All work for the original paper was
+performed on a server with 256GB of RAM. Less is possible with reduced the parallelization, but
+results in correspondingly slower runtimes. Memory usage also depends on library design, and
+analysis of the original experiments required at least 64GB of RAM. For the first run, monitor
+memory use carefully, and select the machine and parallelization accordingly.
+
 ### Usage
 
+The NucleaSeq pipeline is a combination of command line invocations and Jupyter notebooks,
+typically performed in the order below. The notebooks are located in the `notebooks` folder and
+contain instructions for their use.
+
+#### Library design
+Notebook: `NucleaSeq Oligo Design.ipynb`
+
+#### Raw data preprocessing
+Command line:
 ```
-Usage:
-  nucleaseq setup_run <min_seq_len> <max_seq_len> <out_prefix> <sample_dirs>... [-v | -vv | -vvv]
-  nucleaseq preprocess <uncut_or_cut> <targets_file> <target_name> <pamtarg_pos> <exploded_oligos_file> <max_primer_err> <max_bc_err> <read_names_by_seq_file> <read_names_by_sample_file> <out_prefix> <start> <inc> <large_inc> [--nprocs=<nprocs>] [-v | -vv | -vvv]
+  nucleaseq setup_run ...
+  nucleaseq preprocess ...
+```
+Type `nucleaseq --help` for details.
+
+#### Analysis
+Notebooks, in the following order:
+```
+NucleaSeq Full Data Tabulation and Normalization Factors.ipynb
+NucleaSeq Full Data Analysis.ipynb
+NucleaSeq Cut Data Processing.ipynb
 ```
 
-##### Coming soon:
-Jupyter notebooks with convenient organization of output results and figures.
+### CRISPR Model
+
+The CRISPR Model described in the paper is available in this software package. Its use is explained
+in the notebook `CRISPR Model Calculator Tutorial.ipynb`.

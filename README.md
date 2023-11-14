@@ -10,7 +10,7 @@ A package for the processing of NucleaSeq data, as described in the manuscript:
 
 ### Installation
 
-The following instructions should work across platforms, except that installing virtualenv with apt-get is Ubuntu specific. For other platforms, install virtualenv appropriately if desired.
+The following instructions should work across platforms, except that installing virtualenv with apt-get is Ubuntu specific. For other platforms, install virtualenv appropriately if desired. And please note, this software relies on Python 2.7 (NOT Python 3!!!). You may need to establish an appropriate Python 2.7 environment before it will work for you.
 
 First, clone the repository to a local directory:
 

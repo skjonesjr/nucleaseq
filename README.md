@@ -30,7 +30,7 @@ virtualenv envnucleaseq
 Now install dependencies:
 
 ```
-pip install numpy==1.13.3 && pip install cython==0.24 && pip install -r requirements.txt
+pip install -r requirements.txt
 ```
 
 Note that some versions of pip require each line of the requirements.txt file be installed in a

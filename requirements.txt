@@ -1,4 +1,5 @@
 numpy==1.13.3
+cython==0.24
 biopython==1.70
 docopt==0.6.2
 matplotlib==2.2.2

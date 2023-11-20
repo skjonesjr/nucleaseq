@@ -10,6 +10,7 @@ if __name__ == '__main__':
         name='nucleaseq',
         packages=['nucleaseq'],
         version=VERSION,
+        include_dirs = [np.get_include()],
         entry_points={
           'console_scripts': [
               'nucleaseq = nucleaseq.main:main'

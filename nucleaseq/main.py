@@ -10,10 +10,14 @@ Commands:
   preprocess        Preprocess reads to determine identity and structure.
   
 Parameters:
-  min_seq_len                    Minimum sequence length to analyse
-  max_seq_len                    Maximum sequence length to analyse
+  min_seq_len                    Minimum sequence length to analyse. 
+                                 Set to <= length of your shortest library member after cleavage but before adapter ligation.
+  max_seq_len                    Maximum sequence length to analyse.
+                                 Set to >= length of your largest library member before adapter ligation.
   out_prefix                     Prefix for output files for specific run
-  sample_dirs                    Directories with sample fastq files, one directory per time point
+  sample_dirs                    Directories with sample fastq files, one directory per time point.
+                                 Fastq files may have .txt or .fastq extensions, and can be compressed (.gz)
+                                 Paired reads should have fastq filenames containing "_R1" and "_R2".
   uncut_or_cut                   "cut" or "uncut", selecting which reads to process
   targets_file                   Yaml file with targets and target names (see targets.yml)
   target_name                    Target name for current experiment
